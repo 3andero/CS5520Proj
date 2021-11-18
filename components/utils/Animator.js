@@ -21,7 +21,8 @@ export default class Animator extends Component {
       var a = val.y - this.props.upPosition.y;
       var b = this.props.downPosition.y - this.props.upPosition.y;
       var x = a / b;
-      this.props.onSwiping(x);
+      var dy = val.y - this.props.currentPosition.y;
+      this.props.onSwiping(x, dy);
     });
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,

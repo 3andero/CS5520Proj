@@ -18,6 +18,14 @@ const DOWN_HEIGHT = UP_HEIGHT - ACTUAL_DOWN_HEIGHT;
 
 
 class SwipeUpMenu extends Component {
+    static propTypes = {
+        callbackMgr: PropTypes.object,
+    }
+
+    static defaultProps = {
+        callbackMgr: { callback: () => { } }
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -99,6 +107,7 @@ class SwipeUpMenu extends Component {
                                     marginVertical: 15,
                                 }}
                                 titleStyle={{ fontWeight: 'bold' }}
+                                onPress={() => this.props.navigation.navigate('Camera')}
                             />
                         </View>
                     </View>
@@ -117,6 +126,7 @@ class SwipeUpMenu extends Component {
                             marginVertical: 15,
                         }}
                         titleStyle={{ fontWeight: 'bold' }}
+                        onPress={() => this.props.navigation.navigate('Map')}
                     />
                 </View>
                 <View style={{ flex: 1, alignSelf: "flex-end" }}>
@@ -175,16 +185,11 @@ class SwipeUpMenu extends Component {
                 containerHeight={UP_HEIGHT}
                 downDisplay={DOWN_HEIGHT}
                 startUp={false}
-                onSwiping={(x) => {
-                    x = 1 - x;
-                    if (x < 0.01) {
-                        x = 0;
-                    } else if (x > 0.99) {
-                        x = 1;
-                    }
-                    // if (x !== this.state.swipePercentage) {
-                        this.setState({ swipePercentage: x });
-                    // }
+                onSwiping={(perc, dy) => {
+                    perc = 1 - perc;
+                    this.props.callbackMgr.callback(perc, dy);
+                    perc = Math.max(Math.round(perc * 400) / 400, 0);
+                    this.setState({ swipePercentage: perc });
                 }}
             >
                 {this.renderContent()}
