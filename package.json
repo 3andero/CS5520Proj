@@ -1,0 +1,36 @@
+{
+  "name": "tracingapp",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "lint": "eslint --ext .js --ext .jsx ."
+  },
+  "dependencies": {
+    "expo": "~43.0.2",
+    "expo-status-bar": "~1.1.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-native": "0.64.3",
+    "react-native-bottom-drawer-view": "^1.0.3",
+    "react-native-elements": "^3.4.2",
+    "react-native-linear-gradient": "^2.5.6",
+    "react-native-safe-area-context": "^3.3.2",
+    "react-native-web": "0.17.1",
+    "expo-linear-gradient": "~10.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1",
+    "eslint-plugin-react": "^7.27.0"
+  },
+  "private": true
+}
