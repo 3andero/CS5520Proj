@@ -104,7 +104,7 @@ class HomePage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { percentage: 0, direction: 0, isReady: false, exposure: { isExposed: false, location: ["place1", "place2"] } };
+        this.state = { percentage: 0, direction: 0, isReady: false, exposure: { isExposed: true, location: ["place1", "place2"] } };
         props.callbackMgr.callback = (x, dy) => {
             this.setState({ percentage: x, direction: dy });
         }
@@ -131,7 +131,7 @@ class HomePage extends Component {
         return (
             <LinearGradient colors={['rgba(80,80,100,0.2)', 'transparent']} style={styles.linearGradient} >
                 <View style={{ flex: 1, alignItems: "center", flexDirection: "column", paddingHorizontal: 15 }}>
-                    {this.state.exposure.isExposed ?
+                    {!this.state.exposure.isExposed ?
                         <SafePage percentage={this.state.percentage} direction={this.state.direction} />
                         : <UnsafePage percentage={this.state.percentage} direction={this.state.direction} exposure={this.state.exposure} />}
                 </View>
