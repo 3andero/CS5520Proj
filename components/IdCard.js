@@ -6,14 +6,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-export default function VaccineCard() {
+export default function IdCard() {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const save = async (value) => {
         try {
           const jsonValue = JSON.stringify(value)
           console.log(JSON.parse(jsonValue))
-          await AsyncStorage.setItem('@vaccine_Key', jsonValue)
+          await AsyncStorage.setItem('@idCard_Key', jsonValue)
         } catch (e) {
           // saving error
         }
@@ -21,7 +21,7 @@ export default function VaccineCard() {
 
     const load = async () => {
         try {
-          const jsonValue = await AsyncStorage.getItem('@vaccine_Key')
+          const jsonValue = await AsyncStorage.getItem('@idCard_Key')
         //   console.log("Load")
         //   console.log(JSON.parse(jsonValue))
           return jsonValue != null ? JSON.parse(jsonValue) : null;
@@ -32,7 +32,7 @@ export default function VaccineCard() {
 
     const remove = async () => {
         try {
-            await AsyncStorage.removeItem('@vaccine_Key');
+            await AsyncStorage.removeItem('@idCard_Key');
         } catch(e) {
           // error reading value
         }
@@ -135,8 +135,8 @@ export default function VaccineCard() {
                 }}
             >
                 <Text style={{textAlign:'center'}}>
-                    To display your <Text style={{fontWeight: "bold"}}>Vaccine ID</Text> here{"\n"}
-                    Select an image of your vaccine ID
+                    To display your <Text style={{fontWeight: "bold"}}>Photo ID</Text> here{"\n"}
+                    Select an image of your ID
                 </Text>
             </View>
 

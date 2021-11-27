@@ -142,14 +142,15 @@ class SwipeUpMenu extends Component {
                             marginVertical: 15,
                         }}
                         titleStyle={{ fontWeight: 'bold' }}
+                        onPress={() => this.props.navigation.navigate('VaccineCard')}
                     />
                 </View>
                 <View style={{ flex: 1, alignSelf: "flex-end" }}>
                     <Button
                         icon={
-                            <Icon name="info" size={this.iconSize(perc)} color="white" />
+                            <Icon name="person" size={this.iconSize(perc)} color="white" />
                         }
-                        title="COVID INFO"
+                        title="ID CARD"
                         buttonStyle={buttonStyle}
                         containerStyle={{
                             width: this.buttonWidth(perc, 1.1),
@@ -157,6 +158,7 @@ class SwipeUpMenu extends Component {
                             marginVertical: 15,
                         }}
                         titleStyle={{ fontWeight: 'bold' }}
+                        onPress={() => this.props.navigation.navigate('IdCard')}
                     />
                 </View>
                 <View style={{ flex: 1, alignSelf: "flex-end" }}>

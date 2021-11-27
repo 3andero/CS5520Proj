@@ -2,9 +2,9 @@
   "expoServerPort": 19000,
   "packagerPort": 19000,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://h6-378.anonymous.cs5520proj.exp.direct",
+  "packagerNgrokUrl": "https://packager.h6-378.anonymous.cs5520proj.exp.direct",
+  "ngrokPid": 11408,
   "webpackServerPort": null,
   "devToolsPort": 19002
 }

@@ -104,7 +104,7 @@ class HomePage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { percentage: 0, direction: 0, isReady: false, exposure: { isExposed: true, location: ["place1", "place2"] } };
+        this.state = { percentage: 0, direction: 0, isReady: false, exposure: { isExposed: false, location: ["place1", "place2"] } };
         props.callbackMgr.callback = (x, dy) => {
             this.setState({ percentage: x, direction: dy });
         }
