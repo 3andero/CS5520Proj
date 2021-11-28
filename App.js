@@ -8,6 +8,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LocationCheckQRCode from "./components/LocationCheckQRCode";
 import LocationCheckManual from "./components/LocationCheckManual";
 import SettingsPage from "./components/SettingsPage";
+import CardPage from "./components/CardPage";
+import { VaccineCardpage } from "./components/VaccineCardPage";
+import { IDCardPage } from "./components/IDCardPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +61,20 @@ export default function App() {
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="VaccCard"
+          component={VaccineCardpage}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="IDCard"
+          component={IDCardPage}
           options={{
             headerShown: true,
           }}

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, Dimensions, StyleSheet } from "react-native";
 import LocationCheck from "./LocationCheck";
-import VaccineCard from "./VaccineCard";
+import CardPage from "./CardPage";
 import BottomDrawer from "./utils/BottomDrawer";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements/dist/icons/Icon";
@@ -218,6 +218,7 @@ class SwipeUpMenu extends Component {
             titleStyle={{
               fontWeight: "bold",
             }}
+            onPress={() => this.props.navigation.navigate("VaccCard")}
           />
         </View>
         <View
@@ -227,8 +228,16 @@ class SwipeUpMenu extends Component {
           }}
         >
           <Button
-            icon={<Icon name="info" size={this.iconSize(perc)} color="white" />}
-            title="COVID INFO"
+            icon={
+              <Icon
+                name="idcard"
+                type="antdesign"
+                size={this.iconSize(perc)}
+                color="white"
+                style={{ paddingHorizontal: 5 }}
+              />
+            }
+            title="ID CARD"
             buttonStyle={buttonStyle}
             containerStyle={{
               width: this.buttonWidth(perc, 1.1),
@@ -238,6 +247,7 @@ class SwipeUpMenu extends Component {
             titleStyle={{
               fontWeight: "bold",
             }}
+            onPress={() => this.props.navigation.navigate("IDCard")}
           />
         </View>
         <View

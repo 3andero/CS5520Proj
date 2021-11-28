@@ -36,7 +36,24 @@ const DEBUG_MODE_BOX = 1;
 const EXPOSE_STATUS_BOX = 2;
 const NOTIFICATION_BUTTON = 3;
 
+async function requestNotificationPermission() {
+  return await Notifications.requestPermissionsAsync({
+    ios: {
+      allowAlert: true,
+      allowBadge: true,
+      allowSound: true,
+      allowAnnouncements: true,
+    },
+  });
+}
+
 const onSubmit = (val) => {
+  requestNotificationPermission().then(() => {
+    notify(val);
+  });
+};
+
+const notify = (val) => {
   if (!val) {
     val = 0;
   }
@@ -45,8 +62,8 @@ const onSubmit = (val) => {
       handleNotification: async () => {
         return {
           shouldShowAlert: true,
-          shouldPlaySound: true,
-          shouldSetBadge: true,
+          // shouldPlaySound: true,
+          // shouldSetBadge: true,
         };
       },
     });
@@ -57,6 +74,7 @@ const onSubmit = (val) => {
       body: "This is the body",
       sound: true,
       color: "blue",
+      data: { data: "goes here" },
     },
     trigger:
       val <= 0
@@ -68,6 +86,8 @@ const onSubmit = (val) => {
   // Notifications show only when app is not active.
   // (ie. another app being used or device's screen is locked)
   Notifications.scheduleNotificationAsync(schedulingOptions);
+  console.log("scheduling notification");
+  console.log(schedulingOptions);
 };
 
 const sections = [
@@ -303,6 +323,12 @@ const SettingsPage = (props0) => {
                         size={25}
                       />
                     }
+                    buttonStyle={{
+                      backgroundColor: "black",
+                      borderWidth: 1,
+                      borderColor: "white",
+                      borderRadius: 20,
+                    }}
                     onPress={() => {
                       let inputNum = Number(text);
                       if (!inputNum) {
