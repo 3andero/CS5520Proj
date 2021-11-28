@@ -33,7 +33,9 @@
     "expo-barcode-scanner": "~11.1.2",
     "react-native-maps": "0.28.1",
     "expo-app-loading": "~1.2.1",
-    "expo-location": "~13.0.4"
+    "expo-location": "~13.0.4",
+    "expo-notifications": "~0.13.3",
+    "@react-native-picker/picker": "2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
