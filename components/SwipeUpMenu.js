@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { View, Text, Dimensions, StyleSheet } from "react-native";
-import LocationCheck from "./LocationCheck";
-import CardPage from "./CardPage";
 import BottomDrawer from "./utils/BottomDrawer";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements/dist/icons/Icon";
@@ -152,8 +150,6 @@ class SwipeUpMenu extends Component {
       </View>
     );
   }
-
-  renderDownMenu() {}
 
   renderContent = () => {
     var perc = this.state.swipePercentage;

@@ -16,7 +16,11 @@ import {
   Button,
 } from "react-native-elements";
 
-import * as Notifications from "expo-notifications";
+import * as VaccineCard from "./VaccineCardPage";
+import * as IDCard from "./IDCardPage";
+import { onSubmit } from "./NotificationMgr";
+import { removeValue, storeData } from "./utils/Storage";
+import { currDate, storeEpiCenter, storeVisited } from "./utils/PlacesStorage";
 
 const ORANGE = "#FF9500";
 const BLUE = "#007AFF";
@@ -35,60 +39,6 @@ const COVID_ALERT_BOX = 0;
 const DEBUG_MODE_BOX = 1;
 const EXPOSE_STATUS_BOX = 2;
 const NOTIFICATION_BUTTON = 3;
-
-async function requestNotificationPermission() {
-  return await Notifications.requestPermissionsAsync({
-    ios: {
-      allowAlert: true,
-      allowBadge: true,
-      allowSound: true,
-      allowAnnouncements: true,
-    },
-  });
-}
-
-const onSubmit = (val) => {
-  requestNotificationPermission().then(() => {
-    notify(val);
-  });
-};
-
-const notify = (val) => {
-  if (!val) {
-    val = 0;
-  }
-  if (val <= 0) {
-    Notifications.setNotificationHandler({
-      handleNotification: async () => {
-        return {
-          shouldShowAlert: true,
-          // shouldPlaySound: true,
-          // shouldSetBadge: true,
-        };
-      },
-    });
-  }
-  const schedulingOptions = {
-    content: {
-      title: "This is a notification",
-      body: "This is the body",
-      sound: true,
-      color: "blue",
-      data: { data: "goes here" },
-    },
-    trigger:
-      val <= 0
-        ? null
-        : {
-            seconds: val,
-          },
-  };
-  // Notifications show only when app is not active.
-  // (ie. another app being used or device's screen is locked)
-  Notifications.scheduleNotificationAsync(schedulingOptions);
-  console.log("scheduling notification");
-  console.log(schedulingOptions);
-};
 
 const sections = [
   {
@@ -126,7 +76,13 @@ const sections = [
             "Do you want to reset your vaccine card and ID?",
             [
               { text: "Cancel", onPress: () => {}, style: "cancel" },
-              { text: "Yes", onPress: () => {}, style: "default" },
+              {
+                text: "Yes",
+                onPress: () => {
+                  [VaccineCard.Key, IDCard.Key].map((val) => removeValue(val));
+                },
+                style: "default",
+              },
             ]
           );
         },
@@ -158,9 +114,39 @@ const sections = [
         icon: "notifications",
         backgroundColor: GREY,
         hideChevron: true,
-        type: "MaterialIcons",
-        // onPress: onSubmit,
+        type: "materialIcons",
         stateIndex: NOTIFICATION_BUTTON,
+      },
+      {
+        title: "Load Default Record",
+        icon: "upload",
+        backgroundColor: GREEN,
+        hideChevron: true,
+        type: "foundation",
+        onPress: () => {
+          let visited = {
+            [currDate()]: ["V5H 0H2", "V5H 0H1", "V3H 1J2", "V3H 0H2"],
+          };
+          storeVisited(visited);
+          storeEpiCenter([]);
+        },
+      },
+      {
+        title: "Load Exposed Record",
+        icon: "upload",
+        backgroundColor: PURPLE,
+        hideChevron: true,
+        type: "foundation",
+        onPress: () => {
+          let visited = {
+            [currDate()]: ["V5H 0H2", "V5H 0H1", "V3H 1J2", "V3H 0H2"],
+          };
+          let epiCenter = {
+            [currDate()]: ["V3H 0H2", "V3H 2T7"],
+          };
+          storeVisited(visited);
+          storeEpiCenter(epiCenter);
+        },
       },
     ],
   },
@@ -327,7 +313,7 @@ const SettingsPage = (props0) => {
                       backgroundColor: "black",
                       borderWidth: 1,
                       borderColor: "white",
-                      borderRadius: 20,
+                      borderRadius: 25,
                     }}
                     onPress={() => {
                       let inputNum = Number(text);

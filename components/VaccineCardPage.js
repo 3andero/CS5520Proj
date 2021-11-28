@@ -1,4 +1,6 @@
 import React, { Component } from "react";
 import CardPage from "./CardPage";
 
-export const VaccineCardpage = () => <CardPage keyName="@VaccCard" />;
+export const Key = "@VaccCard";
+
+export const VaccineCardpage = () => <CardPage keyName={Key} />;

@@ -3,34 +3,11 @@ import { View, Image, Alert } from "react-native";
 import { Button } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getData, storeData } from "./utils/Storage";
 
 const GREY = "#A0A2A0";
 
 const ALBUM_NAME = "Exposure";
-
-const keyName = "@VaccCard";
-
-const storeData = async (key, value) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-  } catch (e) {
-    // saving error
-  }
-};
-
-const getData = async (key) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      // value previously stored
-      return value;
-    }
-  } catch (e) {
-    // error reading value
-  }
-};
-
 class CardPage extends Component {
   constructor(props) {
     super(props);

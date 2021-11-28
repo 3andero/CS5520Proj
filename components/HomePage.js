@@ -11,6 +11,7 @@ import AppLoading from "expo-app-loading";
 import { Button } from "react-native-elements";
 import { getDetailedLocation, getLocation, getZipCode } from "./utils/ZipCode";
 import { Linking } from "react-native";
+import { getEpiCenter, getVisited, intersection } from "./utils/PlacesStorage";
 
 var styles = StyleSheet.create({
   linearGradient: {
@@ -197,7 +198,9 @@ class UnsafePage extends Component {
             }}
           >
             According to your record, you might have exposed at{" "}
-            {this.props.exposedLocation.toString()}
+            <Text style={{ ...fontWeight("400") }}>
+              {this.props.exposedLocation.toString()}
+            </Text>
           </Text>
         </Text>
         {
@@ -257,11 +260,12 @@ class HomePage extends Component {
 
   constructor(props) {
     super(props);
+    this.exposureTmp = [];
     this.state = {
       percentage: 0,
       direction: 0,
       isReady: false,
-      isExposed: false,
+      isExposed: true,
       exposedLocation: ["place1", "place2"],
     };
     props.callbackMgr.swipeUpCallback = (x, dy) => {
@@ -279,7 +283,17 @@ class HomePage extends Component {
   }
 
   async _updateContactInfo() {
-    return await new Promise((r) => setTimeout(r, 1000));
+    // return await new Promise((r) => setTimeout(r, 1000));
+    let visited = await getVisited();
+    console.log(visited);
+    let epi = await getEpiCenter();
+    console.log(epi);
+    let exp = intersection(visited, epi);
+    if (exp.length > 0) {
+      let details = await getDetailedLocation(exp[0]);
+      this.exposureTmp.push(details.name + ", " + details.region);
+    }
+    console.log(this.exposureTmp);
   }
 
   render() {
@@ -288,10 +302,12 @@ class HomePage extends Component {
         <View>
           <ActivityIndicator size="large" />
           <AppLoading
-            startAsync={this._updateContactInfo}
+            startAsync={this._updateContactInfo.bind(this)}
             onFinish={() =>
               this.setState({
                 isReady: true,
+                isExposed: this.exposureTmp.length > 0,
+                exposedLocation: this.exposureTmp,
               })
             }
             onError={console.warn}
