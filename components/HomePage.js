@@ -9,6 +9,7 @@ import DoctorLogo2 from '../assets/doctor3.png';
 import PropTypes from 'prop-types';
 import AppLoading from 'expo-app-loading';
 import { Button } from 'react-native-elements';
+import { getDetailedLocation, getLocation, getZipCode } from './utils/ZipCode';
 
 
 var styles = StyleSheet.create({
