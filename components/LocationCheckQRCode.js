@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
-import { BarCodeScanner } from "expo-barcode-scanner";
+import { Text, View, StyleSheet } from "react-native";
+import { Camera } from "expo-camera";
+import { Button } from "react-native-elements";
 
 function LocationCheckQRCode() {
   const [hasPermission, setHasPermission] = useState(null);
@@ -8,7 +9,7 @@ function LocationCheckQRCode() {
 
   useEffect(() => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
     })();
   }, []);
@@ -27,12 +28,31 @@ function LocationCheckQRCode() {
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner
+      <Camera
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
+        ratio={"16:9"}
+        style={{
+          flex: 1,
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          justifyContent: "space-between",
+        }}
       />
+      <View style={{ flex: 10 }} />
       {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+        <Button
+          containerStyle={{ flex: 1, alignItems: "center" }}
+          buttonStyle={{
+            height: 40,
+            marginBottom: 20,
+            borderRadius: 20,
+            paddingHorizontal: 20,
+          }}
+          title={"Tap to Scan Again"}
+          titleStyle={{ fontWeight: "bold" }}
+          onPress={() => setScanned(false)}
+        />
       )}
     </View>
   );
