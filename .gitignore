@@ -43,3 +43,5 @@ typings/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+.VSCodeCounter

@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  View,
-  Dimensions,
-} from 'react-native';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { View, Dimensions } from "react-native";
 
-import Animator from './Animator';
+import Animator from "./Animator";
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 export default class BottomDrawer extends Component {
   static propTypes = {
@@ -92,13 +89,12 @@ export default class BottomDrawer extends Component {
      * Set all the way down positon
      */
     alldownDisplay: PropTypes.number,
-
-  }
+  };
 
   static defaultProps = {
     offset: 0,
     startUp: true,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 0,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
@@ -106,12 +102,12 @@ export default class BottomDrawer extends Component {
     borderTopRightRadius: 0,
     roundedEdges: true,
     shadow: true,
-    onExpanded: () => { },
-    onCollapsed: () => { },
-    onExpanding: () => { },
-    onSwiping: () => { },
-    alldownDisplay: 0
-  }
+    onExpanded: () => {},
+    onCollapsed: () => {},
+    onExpanding: () => {},
+    onSwiping: () => {},
+    alldownDisplay: 0,
+  };
 
   constructor(props) {
     super(props);
@@ -121,17 +117,32 @@ export default class BottomDrawer extends Component {
      * before its position changes between up / down.
      */
     this.TOGGLE_THRESHOLD = this.props.containerHeight / 11;
-    this.DOWN_DISPLAY = this.props.downDisplay || this.props.containerHeight / 1.5;
+    this.DOWN_DISPLAY =
+      this.props.downDisplay || this.props.containerHeight / 1.5;
 
     /**
      * UP_POSITION and DOWN_POSITION calculate the two (x,y) values for when
      * the drawer is swiped into up position and down position.
      */
-    this.UP_POSITION = this._calculateUpPosition(SCREEN_HEIGHT, this.props.containerHeight, this.props.offset)
-    this.DOWN_POSITION = this._calculateDownPosition(this.UP_POSITION, this.DOWN_DISPLAY)
-    this.ALL_DOWN_POSITION = { x: 0, y: this.props.alldownDisplay }
+    this.UP_POSITION = this._calculateUpPosition(
+      SCREEN_HEIGHT,
+      this.props.containerHeight,
+      this.props.offset
+    );
+    this.DOWN_POSITION = this._calculateDownPosition(
+      this.UP_POSITION,
+      this.DOWN_DISPLAY
+    );
+    this.ALL_DOWN_POSITION = {
+      x: 0,
+      y: this.props.alldownDisplay,
+    };
 
-    this.state = { currentPosition: this.props.startUp ? this.UP_POSITION : this.DOWN_POSITION };
+    this.state = {
+      currentPosition: this.props.startUp
+        ? this.UP_POSITION
+        : this.DOWN_POSITION,
+    };
   }
 
   render() {
@@ -153,37 +164,39 @@ export default class BottomDrawer extends Component {
       >
         {this.props.children}
 
-        <View style={{
-          height: Math.sqrt(SCREEN_HEIGHT),
-          backgroundColor: this.props.backgroundColor,
-          borderRadius: this.props.borderRadius,
-          borderBottomLeftRadius: this.props.borderBottomLeftRadius,
-          borderBottomRightRadius: this.props.borderBottomRightRadius,
-          borderTopLeftRadius: this.props.borderTopLeftRadius,
-          borderTopRightRadius: this.props.borderTopRightRadius,
-          elevation: 4,
-        }}
-
+        <View
+          style={{
+            height: Math.sqrt(SCREEN_HEIGHT),
+            backgroundColor: this.props.backgroundColor,
+            borderRadius: this.props.borderRadius,
+            borderBottomLeftRadius: this.props.borderBottomLeftRadius,
+            borderBottomRightRadius: this.props.borderBottomRightRadius,
+            borderTopLeftRadius: this.props.borderTopLeftRadius,
+            borderTopRightRadius: this.props.borderTopRightRadius,
+            elevation: 4,
+          }}
         />
       </Animator>
-    )
+    );
   }
 
   setCurrentPosition(position) {
-    this.setState({ currentPosition: position })
+    this.setState({
+      currentPosition: position,
+    });
   }
 
   _calculateUpPosition(screenHeight, containerHeight, offset) {
     return {
       x: 0,
-      y: screenHeight - (containerHeight + offset)
-    }
+      y: screenHeight - (containerHeight + offset),
+    };
   }
 
   _calculateDownPosition(upPosition, downDisplay) {
     return {
       x: 0,
-      y: upPosition.y + downDisplay
+      y: upPosition.y + downDisplay,
     };
   }
 }
