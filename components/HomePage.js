@@ -7,11 +7,12 @@ import RefreshLogo2 from "../assets/refresh2.png";
 import RiskLogo from "../assets/medium-risk.png";
 import DoctorLogo2 from "../assets/doctor3.png";
 import PropTypes from "prop-types";
-import AppLoading from "expo-app-loading";
 import { Button } from "react-native-elements";
 import { getDetailedLocation, getLocation, getZipCode } from "./utils/ZipCode";
 import { Linking } from "react-native";
 import { getEpiCenter, getVisited, intersection } from "./utils/PlacesStorage";
+import { Platform } from "react-native";
+import { CALLBACK_MGR } from "./utils/CallbackMgr";
 
 var styles = StyleSheet.create({
   linearGradient: {
@@ -198,7 +199,7 @@ class UnsafePage extends Component {
             }}
           >
             According to your record, you might have exposed at{" "}
-            <Text style={{ ...fontWeight("400") }}>
+            <Text style={{ ...fontWeight("500") }}>
               {this.props.exposedLocation.toString()}
             </Text>
           </Text>
@@ -269,49 +270,54 @@ class HomePage extends Component {
       exposedLocation: ["place1", "place2"],
     };
     props.callbackMgr.swipeUpCallback = (x, dy) => {
-      this.setState({
-        percentage: x,
-        direction: dy,
-      });
+      this.state.isReady &&
+        this.setState({
+          percentage: x,
+          direction: dy,
+        });
     };
     props.callbackMgr.isExposedCallback = (newVal) => {
-      this.setState({
-        isExposed: newVal,
-      });
+      this.state.isReady &&
+        this.setState({
+          isExposed: newVal,
+        });
     };
     props.callbackMgr.isExposed = () => this.state.isExposed;
+
+    CALLBACK_MGR.isHomePageLoaded = () => this.state.isReady;
+    CALLBACK_MGR.reloadCallback = () =>
+      this.state.isReady && this.setState({ isReady: false });
   }
 
   async _updateContactInfo() {
-    // return await new Promise((r) => setTimeout(r, 1000));
     let visited = await getVisited();
-    console.log(visited);
     let epi = await getEpiCenter();
-    console.log(epi);
     let exp = intersection(visited, epi);
     if (exp.length > 0) {
       let details = await getDetailedLocation(exp[0]);
-      this.exposureTmp.push(details.name + ", " + details.region);
+      this.exposureTmp = [
+        details.name +
+          ", " +
+          ((Platform.OS === "android" && details.street + ", ") || "") +
+          details.region,
+      ];
+    } else {
+      this.exposureTmp = [];
     }
-    console.log(this.exposureTmp);
   }
 
   render() {
     if (!this.state.isReady) {
+      this._updateContactInfo().then(() =>
+        this.setState({
+          isReady: true,
+          isExposed: this.exposureTmp.length > 0,
+          exposedLocation: this.exposureTmp,
+        })
+      );
       return (
         <View>
           <ActivityIndicator size="large" />
-          <AppLoading
-            startAsync={this._updateContactInfo.bind(this)}
-            onFinish={() =>
-              this.setState({
-                isReady: true,
-                isExposed: this.exposureTmp.length > 0,
-                exposedLocation: this.exposureTmp,
-              })
-            }
-            onError={console.warn}
-          ></AppLoading>
         </View>
       );
     }

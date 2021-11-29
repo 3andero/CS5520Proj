@@ -20,7 +20,14 @@ import * as VaccineCard from "./VaccineCardPage";
 import * as IDCard from "./IDCardPage";
 import { onSubmit } from "./NotificationMgr";
 import { removeValue, storeData } from "./utils/Storage";
-import { currDate, storeEpiCenter, storeVisited } from "./utils/PlacesStorage";
+import {
+  currDate,
+  getEpiCenter,
+  getVisited,
+  storeEpiCenter,
+  storeVisited,
+} from "./utils/PlacesStorage";
+import { CALLBACK_MGR } from "./utils/CallbackMgr";
 
 const ORANGE = "#FF9500";
 const BLUE = "#007AFF";
@@ -39,6 +46,19 @@ const COVID_ALERT_BOX = 0;
 const DEBUG_MODE_BOX = 1;
 const EXPOSE_STATUS_BOX = 2;
 const NOTIFICATION_BUTTON = 3;
+
+const resetCards = (msg) => {
+  Alert.alert("Warning", msg, [
+    { text: "Cancel", onPress: () => {}, style: "cancel" },
+    {
+      text: "Yes",
+      onPress: () => {
+        [VaccineCard.Key, IDCard.Key].map((val) => removeValue(val));
+      },
+      style: "default",
+    },
+  ]);
+};
 
 const sections = [
   {
@@ -70,22 +90,8 @@ const sections = [
         backgroundColor: BLUE,
         icon: "reload",
         type: "ionicon",
-        onPress: () => {
-          Alert.alert(
-            "Warning",
-            "Do you want to reset your vaccine card and ID?",
-            [
-              { text: "Cancel", onPress: () => {}, style: "cancel" },
-              {
-                text: "Yes",
-                onPress: () => {
-                  [VaccineCard.Key, IDCard.Key].map((val) => removeValue(val));
-                },
-                style: "default",
-              },
-            ]
-          );
-        },
+        onPress: () =>
+          resetCards("Do you want to reset your vaccine card and ID?"),
       },
       {
         title: "Privacy",
@@ -112,7 +118,7 @@ const sections = [
       {
         title: "Exposure Notification",
         icon: "notifications",
-        backgroundColor: GREY,
+        backgroundColor: ORANGE,
         hideChevron: true,
         type: "materialIcons",
         stateIndex: NOTIFICATION_BUTTON,
@@ -128,7 +134,8 @@ const sections = [
             [currDate()]: ["V5H 0H2", "V5H 0H1", "V3H 1J2", "V3H 0H2"],
           };
           storeVisited(visited);
-          storeEpiCenter([]);
+          storeEpiCenter({});
+          CALLBACK_MGR.reloadCallback();
         },
       },
       {
@@ -146,6 +153,50 @@ const sections = [
           };
           storeVisited(visited);
           storeEpiCenter(epiCenter);
+          CALLBACK_MGR.reloadCallback();
+        },
+      },
+      {
+        title: "Full Reset",
+        backgroundColor: RED,
+        icon: "reload-circle",
+        type: "ionicon",
+        onPress: () => {
+          resetCards(
+            "Do you want to reset Vaccine Card, ID and all exposure data?"
+          );
+          storeVisited({});
+          storeEpiCenter({});
+          CALLBACK_MGR.reloadCallback();
+        },
+      },
+      {
+        title: "Show Places",
+        backgroundColor: TEAL_BLUE,
+        icon: "magnifying-glass",
+        type: "foundation",
+        onPress: () => {
+          let e = "";
+          let v = "";
+
+          (async () => {
+            await getEpiCenter().then((val) => {
+              e = val;
+              console.log(val);
+            });
+            await getVisited().then((val) => {
+              v = val;
+              console.log(val);
+            });
+          })().then(() =>
+            Alert.alert(
+              "Info",
+              "EpiCenter " +
+                JSON.stringify(e) +
+                "\nVisited " +
+                JSON.stringify(v)
+            )
+          );
         },
       },
     ],
@@ -285,62 +336,16 @@ const SettingsPage = (props0) => {
     return index.toString();
   };
 
-  const CustomModal = () => {
-    let setModalVisible = setSwitched[NOTIFICATION_BUTTON];
-    let val = switched[NOTIFICATION_BUTTON];
-    const InputFieldsStyle = {
-      borderWidth: 0,
-    };
-    let [text, setText] = useState("");
-    return (
-      <View style={styles.centeredView}>
-        <Modal animationType="fade" transparent={true} visible={val}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Input
-                onChangeText={setText}
-                rightIcon={
-                  <Button
-                    icon={
-                      <Icon
-                        name="check"
-                        type="entypo"
-                        color="#fafafa"
-                        size={25}
-                      />
-                    }
-                    buttonStyle={{
-                      backgroundColor: "black",
-                      borderWidth: 1,
-                      borderColor: "white",
-                      borderRadius: 25,
-                    }}
-                    onPress={() => {
-                      let inputNum = Number(text);
-                      if (!inputNum) {
-                        inputNum = 0;
-                      }
-                      setModalVisible(!val);
-                      onSubmit(inputNum);
-                    }}
-                  />
-                }
-                containerStyle={styles.inputContainerStyle}
-                placeholder="secs to trigger"
-                style={InputFieldsStyle}
-              />
-            </View>
-          </View>
-        </Modal>
-      </View>
+  const ModalWrapper = () =>
+    CustomModal(
+      switched[NOTIFICATION_BUTTON],
+      setSwitched[NOTIFICATION_BUTTON]
     );
-  };
 
   return (
     <>
       <SectionList
         keyExtractor={keyExtractor}
-        // ListHeaderComponent={ListHeaderComponent}
         sections={sections.filter(
           (s) => !(s.debugOnly && !switched[DEBUG_MODE_BOX])
         )}
@@ -349,8 +354,57 @@ const SettingsPage = (props0) => {
         ItemSeparatorComponent={ItemSeparatorComponent}
         stickySectionHeadersEnabled={false}
       />
-      <CustomModal />
+      <ModalWrapper />
     </>
+  );
+};
+
+const CustomModal = (val, setModalVisible) => {
+  const InputFieldsStyle = {
+    borderWidth: 0,
+  };
+  let [sec, setSec] = useState("");
+  let [zip, setZip] = useState("");
+  return (
+    <View style={styles.centeredView}>
+      <Modal animationType="fade" transparent={true} visible={val}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Input
+              onChangeText={setSec}
+              containerStyle={styles.inputContainerStyle}
+              placeholder="seconds to trigger"
+              style={InputFieldsStyle}
+            />
+            <Input
+              onChangeText={setZip}
+              containerStyle={{ ...styles.inputContainerStyle, marginTop: 0 }}
+              placeholder="content"
+              style={InputFieldsStyle}
+            />
+            <Button
+              icon={
+                <Icon name="check" type="entypo" color="#fafafa" size={25} />
+              }
+              buttonStyle={{
+                backgroundColor: "black",
+                borderWidth: 1,
+                borderColor: "white",
+                borderRadius: 25,
+              }}
+              onPress={() => {
+                let inputNum = Number(sec);
+                if (!inputNum) {
+                  inputNum = 0;
+                }
+                setModalVisible(!val);
+                onSubmit(inputNum, zip);
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 };
 

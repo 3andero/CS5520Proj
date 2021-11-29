@@ -1,4 +1,11 @@
 import * as Notifications from "expo-notifications";
+import { CALLBACK_MGR } from "./utils/CallbackMgr";
+import {
+  appendPlaceToDate,
+  currDate,
+  getEpiCenter,
+  storeEpiCenter,
+} from "./utils/PlacesStorage";
 
 async function requestNotificationPermission() {
   return await Notifications.requestPermissionsAsync({
@@ -11,17 +18,17 @@ async function requestNotificationPermission() {
   });
 }
 
-export const onSubmit = (val) => {
+export const onSubmit = (sec, zip) => {
   requestNotificationPermission().then(() => {
-    notify(val);
+    notify(sec, zip);
   });
 };
 
-const notify = (val) => {
-  if (!val) {
-    val = 0;
+const notify = (sec, zip) => {
+  if (!sec) {
+    sec = 0;
   }
-  if (val <= 0) {
+  if (sec <= 0) {
     Notifications.setNotificationHandler({
       handleNotification: async () => {
         return {
@@ -34,20 +41,39 @@ const notify = (val) => {
   }
   const schedulingOptions = {
     content: {
-      title: "This is a notification",
-      body: "This is the body",
+      title: "Possible Exposure Detected",
+      body: "please take a look",
       sound: true,
       color: "blue",
-      data: { data: "goes here" },
+      data: { data: [zip] },
     },
     trigger:
-      val <= 0
+      sec <= 0
         ? null
         : {
-            seconds: val,
+            seconds: sec,
           },
   };
-  // Notifications show only when app is not active.
-  // (ie. another app being used or device's screen is locked)
+
   Notifications.scheduleNotificationAsync(schedulingOptions);
+
+  Notifications.addNotificationReceivedListener((n) => {
+    getEpiCenter().then((val) => {
+      let {
+        request: {
+          content: {
+            data: { data: arr },
+          },
+        },
+      } = n;
+      if (!isObject(val)) {
+        val = {};
+      }
+      appendPlaceToDate(val, currDate(), arr);
+      storeEpiCenter(val).then((_val) => CALLBACK_MGR.reloadCallback());
+    });
+  });
 };
+
+const isObject = (obj) =>
+  (typeof obj === "object" || typeof obj === "function") && obj !== null;

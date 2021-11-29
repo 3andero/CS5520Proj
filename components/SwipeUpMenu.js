@@ -6,8 +6,6 @@ import { Icon } from "react-native-elements/dist/icons/Icon";
 import PropTypes from "prop-types";
 import { fontWeight } from "./utils/FontWeightRender";
 
-const TAB_BAR_HEIGHT = 100;
-
 const SCREEN_HEIGHT = Dimensions.get("screen").height;
 const SCREEN_WIDTH = Dimensions.get("screen").width;
 const UP_HEIGHT = SCREEN_HEIGHT - 100;

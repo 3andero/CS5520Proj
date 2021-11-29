@@ -12,17 +12,17 @@ export const storeEpiCenter = (val) => saveActivity(val, epiCenter);
 
 const getPlaces = (placeType) =>
   getData(Key + placeType).then((val) => (val && JSON.parse(val)) || {});
-const saveActivity = (val, placeType) => {
+const saveActivity = (val, placeType) =>
   storeData(Key + placeType, JSON.stringify(val));
-};
 
 export const currDate = () => new Date().toISOString().slice(0, 10);
-export const appendPlaceToDate = (place, date) => {
-  if (date in place) {
-    place[date].push(place);
+export const appendPlaceToDate = (places, date, zips) => {
+  if (date in places) {
+    places[date].push(...zips);
   } else {
-    place[date] = [place];
+    places[date] = zips;
   }
+  places[date] = [...new Set(places[date])];
 };
 
 export const intersection = (p1, p2) => {

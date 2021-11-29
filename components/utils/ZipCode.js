@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import * as Location from "expo-location";
+import { Alert } from "react-native";
 
 let apiKey = "AIzaSyA937CZdWjwqTPx91Zw2hD3Ik8VnWAQ9gc";
 
@@ -16,6 +17,12 @@ let apiKey = "AIzaSyA937CZdWjwqTPx91Zw2hD3Ik8VnWAQ9gc";
  * @returns postal code
  */
 export async function getZipCode(longitude, latitude) {
+  let { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert("Error", "Permission to access location was denied");
+    return;
+  }
+
   Location.setGoogleApiKey(apiKey);
   let regions = await Location.reverseGeocodeAsync({
     longitude,
@@ -41,6 +48,11 @@ export async function getZipCode(longitude, latitude) {
  * @returns
  */
 export async function getLocation(postalCode) {
+  let { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert("Error", "Permission to access location was denied");
+    return;
+  }
   Location.setGoogleApiKey(apiKey);
   let regions = await Location.geocodeAsync(postalCode);
 
@@ -68,6 +80,11 @@ export async function getLocation(postalCode) {
  * @returns detailed information
  */
 export async function getDetailedLocation(postalCode) {
+  let { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert("Error", "Permission to access location was denied");
+    return;
+  }
   let loc = await getLocation(postalCode);
   let regions = await Location.reverseGeocodeAsync({
     longitude: loc.longitude,

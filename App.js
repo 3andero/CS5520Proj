@@ -11,26 +11,22 @@ import SettingsPage from "./components/SettingsPage";
 import CardPage from "./components/CardPage";
 import { VaccineCardpage } from "./components/VaccineCardPage";
 import { IDCardPage } from "./components/IDCardPage";
+import { CALLBACK_MGR } from "./components/utils/CallbackMgr";
 
 const Stack = createNativeStackNavigator();
-
-const mgr = {
-  swipeUpCallback: () => {},
-  isExposedCallback: () => {},
-};
 
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <HomePage callbackMgr={mgr} />
-      <SwipeUpMenu callbackMgr={mgr} navigation={navigation} />
+      <HomePage callbackMgr={CALLBACK_MGR} />
+      <SwipeUpMenu callbackMgr={CALLBACK_MGR} navigation={navigation} />
       <StatusBar style="auto" />
     </View>
   );
 };
 
 const SettingsScreen = ({ navigation }) => {
-  return <SettingsPage callbackMgr={mgr} />;
+  return <SettingsPage callbackMgr={CALLBACK_MGR} />;
 };
 
 export default function App() {
