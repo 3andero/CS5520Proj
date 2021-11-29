@@ -1,11 +1,13 @@
 import React,{useState, useEffect, useRef} from 'react';
+import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Button } from 'react-native';
 
 function LocationCheckManual() {
     const mapRef = useRef(null);
+    // const mapRef = null;
     const [state, setState] = useState(null);
-
+    let marker = null
     
     useEffect(() => {
         const _getLocationPermissions = async () => {
@@ -17,7 +19,21 @@ function LocationCheckManual() {
               setState({ locationPermission: true });
             }
         };
-        _getLocationPermissions();
+
+        const _getLocation = async () => {
+            let pos = await Location.getCurrentPositionAsync({});
+            console.log("current location " + pos.coords.latitude + " " + pos.coords.longitude);
+            let region = {
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                latitudeDelta: 0.2729186541296684,
+                longitudeDelta: 0.26148553937673924,
+            }
+            onRegionChange(region);
+            mapRef.current.animateToRegion(state.region, 2000);
+            
+        };
+
         setState({
             locationPermission: "unknown",
             position: "unknown",
@@ -28,29 +44,38 @@ function LocationCheckManual() {
                 longitudeDelta: 0.26148,
             }
         });
-        console.log("Work");
+
+        _getLocationPermissions();
+
+        _getLocation();
+
+        console.log('effect');
+        console.log(mapRef);
     }, []);
 
+    const onRegionChange = (region) => {   
+        setState({region})
+        console.log("state: ")
+        console.log(state)
+    }
+
     return (
-        <MapView
-            // onRegionChange={onRegionChange}
-            style={styles.map}
-            initialRegion={{
-                latitude: 52.60254,
-                latitudeDelta: 0.27291,
-                longitude: 16.72187,
-                longitudeDelta: 0.26148,
-            }}
-            ref={mapRef}
-        >
-            <Marker
-                key={0}
-                coordinate={{
-                latitude: 52.60254,
-                longitude: 16.72187,
+        <View style={styles.container}>
+            <MapView
+                ref={mapRef}
+                onRegionChange={onRegionChange}
+                style={styles.map}
+                initialRegion={{
+                    latitude: 52.60254,
+                    latitudeDelta: 0.27291,
+                    longitude: 16.72187,
+                    longitudeDelta: 0.26148,
                 }}
-            />
-        </MapView>
+                
+            >
+                
+            </MapView>
+        </View>
     );
 }
 
@@ -64,6 +89,10 @@ const styles = StyleSheet.create({
     map: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
+    },
+    overlay: {
+        position: 'absolute',
+        bottom: 100,
     },
 });
 

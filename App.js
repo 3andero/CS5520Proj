@@ -6,9 +6,9 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LocationCheckQRCode from './components/LocationCheckQRCode';
-import LocationCheckManual from './components/LocationCheckManual';
 import VaccineCard from './components/VaccineCard';
 import IdCard from './components/IdCard';
+import MapComponent from './components/MapComponent';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,7 +36,7 @@ export default function App() {
           options={{ headerShown: true }}
         />
         <Stack.Screen name="Map"
-          component={LocationCheckManual}
+          component={MapComponent}
           options={{ headerShown: true }}
         />
         <Stack.Screen name="VaccineCard"
