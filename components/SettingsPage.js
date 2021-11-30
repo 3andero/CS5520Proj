@@ -379,7 +379,7 @@ const CustomModal = (val, setModalVisible) => {
             <Input
               onChangeText={setZip}
               containerStyle={{ ...styles.inputContainerStyle, marginTop: 0 }}
-              placeholder="content"
+              placeholder="Postal Code"
               style={InputFieldsStyle}
             />
             <Button
