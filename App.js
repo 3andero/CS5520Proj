@@ -6,21 +6,29 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LocationCheckQRCode from './components/LocationCheckQRCode';
-import VaccineCard from './components/VaccineCard';
-import IdCard from './components/IdCard';
+// import VaccineCard from './components/VaccineCard';
+// import IdCard from './components/IdCard';
 import MapComponent from './components/MapComponent';
+import SettingsPage from "./components/SettingsPage";
+import CardPage from "./components/CardPage";
+import { VaccineCardpage } from "./components/VaccineCardPage";
+import { IDCardPage } from "./components/IDCardPage";
+import { CALLBACK_MGR } from "./components/utils/CallbackMgr";
 
 const Stack = createNativeStackNavigator();
 
 const HomeScreen = ({ navigation }) => {
-  var mgr = { callback: () => { } };
   return (
     <View style={styles.container}>
-      <HomePage callbackMgr={mgr} />
-      <SwipeUpMenu callbackMgr={mgr} navigation={navigation} />
+      <HomePage callbackMgr={CALLBACK_MGR} />
+      <SwipeUpMenu callbackMgr={CALLBACK_MGR} navigation={navigation} />
       <StatusBar style="auto" />
     </View>
   );
+};
+
+const SettingsScreen = ({ navigation }) => {
+  return <SettingsPage callbackMgr={CALLBACK_MGR} />;
 };
 
 export default function App() {
@@ -40,12 +48,19 @@ export default function App() {
           options={{ headerShown: true }}
         />
         <Stack.Screen name="VaccineCard"
-          component={VaccineCard}
+          component={VaccineCardpage}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="IdCard"
-          component={IdCard}
+          component={IDCardPage}
           options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            headerShown: true,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

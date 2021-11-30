@@ -131,7 +131,7 @@ const sections = [
         type: "foundation",
         onPress: () => {
           let visited = {
-            [currDate()]: ["V5H 0H2", "V5H 0H1", "V3H 1J2", "V3H 0H2"],
+            [currDate()]: ["V5H0H2", "V5H0H1", "V3H1J2", "V3H0H2"],
           };
           storeVisited(visited);
           storeEpiCenter({});
@@ -146,10 +146,10 @@ const sections = [
         type: "foundation",
         onPress: () => {
           let visited = {
-            [currDate()]: ["V5H 0H2", "V5H 0H1", "V3H 1J2", "V3H 0H2"],
+            [currDate()]: ["V5H0H2", "V5H0H1", "V3H1J2", "V3H0H2"],
           };
           let epiCenter = {
-            [currDate()]: ["V3H 0H2", "V3H 2T7"],
+            [currDate()]: ["V3H0H2", "V3H2T7"],
           };
           storeVisited(visited);
           storeEpiCenter(epiCenter);

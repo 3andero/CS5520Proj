@@ -4,6 +4,8 @@ import { StyleSheet, Button, Text, View, Dimensions } from 'react-native';
 import * as Permissions from 'expo';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
+import { getLocation } from './utils/ZipCode';
+import { getEpiCenter } from './utils/PlacesStorage';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -21,7 +23,8 @@ export default class MapComponent extends Component {
             currentRegion: null,
             loaded: false,
             locationPermission: 'unknown',
-            marker: [],         
+            marker: [],
+            exposedLocation: [],        
         }
         this.currentLocation = this.currentLocation.bind(this);
         this.onRegionChange = this.onRegionChange.bind(this);
@@ -30,7 +33,7 @@ export default class MapComponent extends Component {
 
     _getLocationPermissions = async() => {
         let {status} = await Location.requestForegroundPermissionsAsync();
-        console.log(status);
+        // console.log(status);
         if (status !== 'granted'){
             this.setState({
                 locationPermission: false,
@@ -46,8 +49,8 @@ export default class MapComponent extends Component {
         this._getLocationPermissions();
         (async () => {
                 let position = await Location.getCurrentPositionAsync({});
-                console.log("Here")
-                console.log("My Position:\t" + position.coords.latitude + ',' + position.coords.longitude);
+                // console.log("Here")
+                // console.log("My Position:\t" + position.coords.latitude + ',' + position.coords.longitude);
                 let newRegion = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
@@ -56,30 +59,51 @@ export default class MapComponent extends Component {
                 };
                 this.setState({currentRegion: newRegion})
                 this.animateChange(newRegion);
-                console.log(this.state)
+                // console.log(this.state)
                 this.setState({loaded: true});
             } 
         )();      
     }
 
-    addMarker(){
-        if (this.state.loaded){
-            return(
-                // add marker of infected area here
-                <Marker 
-                    coordinate={{
-                        longitude: 16.721875704824924,
-                        latitude: 50.60254331180157
-                    }}
-                    title="A Marker"
-                />
-            );
-        }
+    loadLocation(){
+        (async () => {
+            // console.log("Load Location");
+            let exposedLocation = []
+            let exposedPostCode = await getEpiCenter();
+            // console.log("Post Code");
+            // console.log(exposedPostCode);
+            for (const [key, codes] of Object.entries(exposedPostCode)) {
+                for (const [key, value] of Object.entries(codes)) {
+                    // console.log(value);
+                    exposedLocation.push([value, await getLocation(value)]);
+                }
+            }
+            // console.log("Exposed Location");
+            // console.log(exposedLocation);
+            this.setState({exposedLocation});
+            
+        })();
     }
 
-    add
+    addMarker(){
+        if (this.state.loaded){
+            let markerList = this.state.exposedLocation.map((loc, i) =>
+                // add marker of at-risk area here 
+                    <Marker 
+                        key={ loc[0] }
+                        coordinate={{
+                            latitude: loc[1].latitude,
+                            longitude: loc[1].longitude,
+                        }}
+                        title= {loc[0]}
+                    />
+                );
+            return markerList;
+        }
+    }
     
     componentDidMount(){
+        this.loadLocation();
         this.currentLocation();
     }
 
@@ -101,6 +125,7 @@ export default class MapComponent extends Component {
                     onRegionChange={this.onRegionChange}
                     style={styles.map}
                 >
+                    {this.addMarker()}
                     {this.state.loaded &&
                         <Marker
                         coordinate={{
@@ -111,7 +136,6 @@ export default class MapComponent extends Component {
                         image={require('../assets/current-location-128px.png')}
                         />
                     }
-                    {this.addMarker()}
                 </MapView>
                     
                 {/* <Button
