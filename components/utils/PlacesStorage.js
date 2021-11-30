@@ -17,8 +17,6 @@ const saveActivity = (val, placeType) =>
 
 export const currDate = () => new Date().toISOString().slice(0, 10);
 export const appendPlaceToDate = (places, date, zips) => {
-  // console.log("zip");
-  // console.log(zips);
   if (date in places) {
     places[date].push(...zips);
   } else {

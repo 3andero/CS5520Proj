@@ -2,8 +2,7 @@ import Constants from "expo-constants";
 import * as Location from "expo-location";
 import { Alert } from "react-native";
 
-// let apiKey = "AIzaSyA937CZdWjwqTPx91Zw2hD3Ik8VnWAQ9gc";
-let apiKey = "AIzaSyAQjJKd8VmG4v_yYRwgRlaVyqYLI3ZU__w";
+let apiKey = "AIzaSyA937CZdWjwqTPx91Zw2hD3Ik8VnWAQ9gc";
 
 /**
  * usage:

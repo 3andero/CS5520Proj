@@ -32,7 +32,6 @@ export default class MapComponent extends Component {
 
     _getLocationPermissions = async() => {
         let {status} = await Location.requestForegroundPermissionsAsync();
-        // console.log(status);
         if (status !== 'granted'){
             this.setState({
                 locationPermission: false,
@@ -48,7 +47,6 @@ export default class MapComponent extends Component {
         this._getLocationPermissions();
         (async () => {
                 let position = await Location.getCurrentPositionAsync({});
-                // console.log("Here")
                 // console.log("My Position:\t" + position.coords.latitude + ',' + position.coords.longitude);
                 let newRegion = {
                     latitude: position.coords.latitude,
