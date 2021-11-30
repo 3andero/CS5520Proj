@@ -4,8 +4,8 @@ import { StyleSheet, Button, Text, View, Dimensions } from 'react-native';
 import * as Permissions from 'expo';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
-import { getLocation } from './utils/ZipCode';
-import { getEpiCenter } from './utils/PlacesStorage';
+import { getLocation, getZipCode } from './utils/ZipCode';
+import { getEpiCenter, getVisited , currDate, appendPlaceToDate, storeVisited } from './utils/PlacesStorage';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -23,7 +23,6 @@ export default class MapComponent extends Component {
             currentRegion: null,
             loaded: false,
             locationPermission: 'unknown',
-            marker: [],
             exposedLocation: [],        
         }
         this.currentLocation = this.currentLocation.bind(this);
@@ -61,21 +60,28 @@ export default class MapComponent extends Component {
                 this.animateChange(newRegion);
                 // console.log(this.state)
                 this.setState({loaded: true});
+
+                let places = await getVisited();
+                let date = currDate();
+                let postcode = await getZipCode(newRegion.longitude, newRegion.latitude);
+                appendPlaceToDate(places, date, [postcode]);
+                storeVisited(places)
             } 
         )();      
     }
 
     loadLocation(){
         (async () => {
-            // console.log("Load Location");
             let exposedLocation = []
             let exposedPostCode = await getEpiCenter();
             // console.log("Post Code");
             // console.log(exposedPostCode);
             for (const [key, codes] of Object.entries(exposedPostCode)) {
                 for (const [key, value] of Object.entries(codes)) {
-                    // console.log(value);
-                    exposedLocation.push([value, await getLocation(value)]);
+                    
+                    let coords = await getLocation(value);
+                    // console.log(coords);
+                    exposedLocation.push([value, coords]);
                 }
             }
             // console.log("Exposed Location");
@@ -87,7 +93,9 @@ export default class MapComponent extends Component {
 
     addMarker(){
         if (this.state.loaded){
-            let markerList = this.state.exposedLocation.map((loc, i) =>
+            // console.log(this.state.exposedLocation);
+
+            let markerList = this.state.exposedLocation.map((loc, i) => (
                 // add marker of at-risk area here 
                     <Marker 
                         key={ loc[0] }
@@ -97,7 +105,8 @@ export default class MapComponent extends Component {
                         }}
                         title= {loc[0]}
                     />
-                );
+            ));
+            // console.log(markerList);
             return markerList;
         }
     }

@@ -37,6 +37,7 @@ function LocationCheckQRCode() {
         // date = date.toISOString().split('T')[0];
         let date = currDate();
         let postcode = data.toUpperCase().replace('-', '').replace(' ', '');
+        postcode = postcode.substr(0,3) + " " + postcode.substr(3);
         appendPlaceToDate(places, date, [postcode]);
         storeVisited(places)
         alert(`Location logged\n ${date}: ${postcode}`);
