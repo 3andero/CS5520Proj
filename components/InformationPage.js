@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 
-class NonExposed extends Component {
+class InformationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -11,4 +11,4 @@ class NonExposed extends Component {
   }
 }
 
-export default NonExposed;
+export default InformationPage;
