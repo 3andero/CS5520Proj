@@ -6,12 +6,14 @@ import HealthLogo from "../assets/heart-health.png";
 import RefreshLogo2 from "../assets/refresh2.png";
 import RiskLogo from "../assets/medium-risk.png";
 import DoctorLogo2 from "../assets/doctor3.png";
-import PropTypes from "prop-types";
 import { Button } from "react-native-elements";
-import { getDetailedLocation, getLocation, getZipCode } from "./utils/ZipCode";
+import {
+  extractSummary,
+  getCurrentLocationAndStore,
+  getDetailedLocation,
+} from "./utils/ZipCode";
 import { Linking } from "react-native";
 import { getEpiCenter, getVisited, intersection } from "./utils/PlacesStorage";
-import { Platform } from "react-native";
 import { CALLBACK_MGR } from "./utils/CallbackMgr";
 
 var styles = StyleSheet.create({
@@ -138,9 +140,6 @@ class UnsafePage extends Component {
         : this.props.percentage;
     rotate2 = Math.abs(rotate2 * (rotate2 - 0.1)) * 1800;
 
-    var buttonPercentage =
-      (Math.floor((1 - this.props.percentage) * 1000) / 10).toString() + "%";
-
     var h = 150 + rotate2 * 1;
     var w = 150 + rotate2 * 1;
     return (
@@ -249,16 +248,6 @@ class UnsafePage extends Component {
 }
 
 class HomePage extends Component {
-  static propTypes = {
-    callbackMgr: PropTypes.object,
-  };
-
-  static defaultProps = {
-    callbackMgr: {
-      swipeUpCallback: {},
-    },
-  };
-
   constructor(props) {
     super(props);
     this.exposureTmp = [];
@@ -269,24 +258,26 @@ class HomePage extends Component {
       isExposed: true,
       exposedLocation: ["place1", "place2"],
     };
-    props.callbackMgr.swipeUpCallback = (x, dy) => {
+    this.cachedLocation = null;
+    CALLBACK_MGR.swipeUpCallback = (x, dy) => {
       this.state.isReady &&
         this.setState({
           percentage: x,
           direction: dy,
         });
     };
-    props.callbackMgr.isExposedCallback = (newVal) => {
+    CALLBACK_MGR.isExposedCallback = (newVal) => {
       this.state.isReady &&
         this.setState({
           isExposed: newVal,
         });
     };
-    props.callbackMgr.isExposed = () => this.state.isExposed;
+    CALLBACK_MGR.isExposed = () => this.state.isExposed;
 
     CALLBACK_MGR.isHomePageLoaded = () => this.state.isReady;
     CALLBACK_MGR.reloadCallback = () =>
       this.state.isReady && this.setState({ isReady: false });
+    CALLBACK_MGR.getCachedLocation = (() => this.cachedLocation).bind(this);
   }
 
   async _updateContactInfo() {
@@ -294,16 +285,19 @@ class HomePage extends Component {
     let epi = await getEpiCenter();
     let exp = intersection(visited, epi);
     if (exp.length > 0) {
-      let details = await getDetailedLocation(exp[0]);
-      this.exposureTmp = [
-        details.name +
-          ", " +
-          ((Platform.OS === "android" && details.street + ", ") || "") +
-          details.region,
-      ];
+      let [details, loc] = await getDetailedLocation(exp[0]);
+      this.exposureTmp = [extractSummary(details)];
     } else {
       this.exposureTmp = [];
     }
+  }
+
+  componentDidMount() {
+    getCurrentLocationAndStore().then(([ok, location]) => {
+      if (ok) {
+        this.cachedLocation = location;
+      }
+    });
   }
 
   render() {

@@ -1,6 +1,11 @@
-import Constants from "expo-constants";
 import * as Location from "expo-location";
 import { Alert } from "react-native";
+import {
+  appendPlaceToDate,
+  currDate,
+  getVisited,
+  storeVisited,
+} from "./PlacesStorage";
 
 let apiKey = "AIzaSyA937CZdWjwqTPx91Zw2hD3Ik8VnWAQ9gc";
 
@@ -85,10 +90,45 @@ export async function getDetailedLocation(postalCode) {
     return;
   }
   let loc = await getLocation(postalCode);
+  if (!loc) {
+    return [postalCode, loc];
+  }
   let regions = await Location.reverseGeocodeAsync({
     longitude: loc.longitude,
     latitude: loc.latitude,
   });
 
-  return regions.pop();
+  return [regions.pop(), loc];
 }
+
+export const extractSummary = (details) =>
+  (!details.name && details) ||
+  details.name +
+    ", " +
+    ((Platform.OS === "android" && details.street + ", ") || "") +
+    details.region;
+
+export const getCurrentLocationAndStore = async () => {
+  let { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== "granted") {
+    console.log(status);
+    return [false, null];
+  }
+  let position = await Location.getCurrentPositionAsync({});
+
+  if (!position || !position.coords) {
+    return [false, null];
+  }
+
+  let coordinate = {
+    longitude: position.coords.longitude,
+    latitude: position.coords.latitude,
+  };
+
+  let places = await getVisited();
+  let date = currDate();
+  let postcode = await getZipCode(coordinate.longitude, coordinate.latitude);
+  appendPlaceToDate(places, date, [postcode]);
+  storeVisited(places);
+  return [true, coordinate];
+};

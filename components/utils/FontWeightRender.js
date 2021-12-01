@@ -1,5 +1,3 @@
-// const oldRender = Text.render;
-
 const settings = {
   100: {
     fontFamily: "sans-serif-thin",

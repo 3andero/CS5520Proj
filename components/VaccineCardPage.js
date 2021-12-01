@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import CardPage from "./CardPage";
 
 export const Key = "@VaccCard";

@@ -57,7 +57,7 @@ export default class BottomDrawer extends Component {
     onCollapsed: PropTypes.func,
 
     /**
-     * todo
+     * callback to update the position when it's swiping.
      */
     onSwiping: PropTypes.func,
 
