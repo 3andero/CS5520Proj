@@ -1,12 +1,14 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import HomePage from "./components/HomePage";
-import SwipeUpMenu from "./components/SwipeUpMenu";
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LocationCheckQRCode from "./components/LocationCheckQRCode";
-import LocationCheckManual from "./components/LocationCheckManual";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import HomePage from './components/HomePage';
+import SwipeUpMenu from './components/SwipeUpMenu';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LocationCheckQRCode from './components/LocationCheckQRCode';
+// import VaccineCard from './components/VaccineCard';
+// import IdCard from './components/IdCard';
+import MapComponent from './components/MapComponent';
 import SettingsPage from "./components/SettingsPage";
 import CardPage from "./components/CardPage";
 import { VaccineCardpage } from "./components/VaccineCardPage";
@@ -33,44 +35,29 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
+        <Stack.Screen name="Home"
           component={HomeScreen}
-          options={{
-            headerShown: false,
-          }}
+          options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="Camera"
+        <Stack.Screen name="Camera"
           component={LocationCheckQRCode}
-          options={{
-            headerShown: true,
-          }}
+          options={{ headerShown: true }}
         />
-        <Stack.Screen
-          name="Map"
-          component={LocationCheckManual}
-          options={{
-            headerShown: true,
-          }}
+        <Stack.Screen name="Map"
+          component={MapComponent}
+          options={{ headerShown: true }}
         />
-        <Stack.Screen
+        <Stack.Screen name="VaccineCard"
+          component={VaccineCardpage}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen name="IdCard"
+          component={IDCardPage}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{
-            headerShown: true,
-          }}
-        />
-        <Stack.Screen
-          name="VaccCard"
-          component={VaccineCardpage}
-          options={{
-            headerShown: true,
-          }}
-        />
-        <Stack.Screen
-          name="IDCard"
-          component={IDCardPage}
           options={{
             headerShown: true,
           }}
@@ -84,8 +71,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

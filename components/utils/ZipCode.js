@@ -55,7 +55,6 @@ export async function getLocation(postalCode) {
   }
   Location.setGoogleApiKey(apiKey);
   let regions = await Location.geocodeAsync(postalCode);
-
   return regions.pop();
 }
 

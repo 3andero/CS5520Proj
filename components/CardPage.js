@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { View, Image, Alert } from "react-native";
+import { View, Image, Alert, TouchableOpacity, Dimensions, Text } from "react-native";
 import { Button } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { getData, storeData } from "./utils/Storage";
 
 const GREY = "#A0A2A0";
+
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const ALBUM_NAME = "Exposure";
 class CardPage extends Component {
@@ -99,6 +102,21 @@ class CardPage extends Component {
           }}
           onPress={this.pickImage}
         />
+        {/* <TouchableOpacity onPress={this.pickImage} 
+          style={{
+                  width: screenWidth,
+                  height: screenHeight/8,
+                  justifyContent: 'center',
+                  backgroundColor:"#3d6581",
+                }}
+        >
+          <Text style={{textAlign: 'center',
+                        fontSize: 35,
+                        color: "white",
+                      }}>
+            Select Image
+          </Text>
+        </TouchableOpacity> */}
         <View
           style={{
             flex: 10,
