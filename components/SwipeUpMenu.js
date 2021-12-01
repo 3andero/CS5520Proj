@@ -212,7 +212,7 @@ class SwipeUpMenu extends Component {
             titleStyle={{
               fontWeight: "bold",
             }}
-            onPress={() => this.props.navigation.navigate("VaccCard")}
+            onPress={() => this.props.navigation.navigate("VaccineCard")}
           />
         </View>
         <View
@@ -241,7 +241,7 @@ class SwipeUpMenu extends Component {
             titleStyle={{
               fontWeight: "bold",
             }}
-            onPress={() => this.props.navigation.navigate("IDCard")}
+            onPress={() => this.props.navigation.navigate("IdCard")}
           />
         </View>
         <View

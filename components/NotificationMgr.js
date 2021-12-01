@@ -58,6 +58,7 @@ const notify = (sec, zip) => {
   Notifications.scheduleNotificationAsync(schedulingOptions);
 
   Notifications.addNotificationReceivedListener((n) => {
+    // console.log("This is run")
     getEpiCenter().then((val) => {
       let {
         request: {
