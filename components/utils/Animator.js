@@ -5,7 +5,6 @@ import {
   Dimensions,
   StyleSheet,
   Platform,
-  View,
 } from "react-native";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -50,14 +49,6 @@ export default class Animator extends Component {
         {...this._panResponder.panHandlers}
       >
         {this.props.children}
-        {/* {Platform.select(
-          {
-            ios: ,
-            android: <View style={{ backgroundColor: this.props.backgroundColor }}>
-              {this.props.children}
-            </View>
-          }
-        )} */}
       </Animated.View>
     );
   }
@@ -145,7 +136,6 @@ const styles = {
           android: {
             borderColor: "rgba(105,105,105,0.3)",
             borderWidth: 0.81,
-            // backgroundColor: '#FFFBFE',
           },
         }),
       }

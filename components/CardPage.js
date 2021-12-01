@@ -1,14 +1,11 @@
 import React, { Component } from "react";
-import { View, Image, Alert, TouchableOpacity, Dimensions, Text } from "react-native";
+import { View, Image, Alert, StyleSheet, Platform } from "react-native";
 import { Button } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { getData, storeData } from "./utils/Storage";
 
 const GREY = "#A0A2A0";
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 
 const ALBUM_NAME = "Exposure";
 class CardPage extends Component {
@@ -72,7 +69,6 @@ class CardPage extends Component {
   pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      // allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -88,35 +84,29 @@ class CardPage extends Component {
   };
 
   render() {
+    const buttonStyle =
+      (Platform.OS === "ios" && {
+        ...styles.buttonStyle,
+        height: 80,
+        paddingBottom: 20,
+      }) ||
+      styles.buttonStyle;
     return (
-      <View style={{ flex: 1, flexDirection: "column-reverse" }}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column-reverse",
+        }}
+      >
         <Button
-          buttonStyle={{
-            backgroundColor: GREY,
-            height: 65,
-            borderColor: "white",
-          }}
+          buttonStyle={buttonStyle}
           title={"Press to Load"}
           titleStyle={{
             fontWeight: "bold",
+            fontSize: 19,
           }}
           onPress={this.pickImage}
         />
-        {/* <TouchableOpacity onPress={this.pickImage} 
-          style={{
-                  width: screenWidth,
-                  height: screenHeight/8,
-                  justifyContent: 'center',
-                  backgroundColor:"#3d6581",
-                }}
-        >
-          <Text style={{textAlign: 'center',
-                        fontSize: 35,
-                        color: "white",
-                      }}>
-            Select Image
-          </Text>
-        </TouchableOpacity> */}
         <View
           style={{
             flex: 10,
@@ -135,5 +125,13 @@ class CardPage extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  buttonStyle: {
+    backgroundColor: GREY,
+    height: 65,
+    borderColor: "white",
+  },
+});
 
 export default CardPage;

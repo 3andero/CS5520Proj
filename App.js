@@ -1,63 +1,60 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import HomePage from './components/HomePage';
-import SwipeUpMenu from './components/SwipeUpMenu';
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LocationCheckQRCode from './components/LocationCheckQRCode';
-// import VaccineCard from './components/VaccineCard';
-// import IdCard from './components/IdCard';
-import MapComponent from './components/MapComponent';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
+import HomePage from "./components/HomePage";
+import SwipeUpMenu from "./components/SwipeUpMenu";
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LocationCheckQRCode from "./components/LocationCheckQRCode";
+import MapComponent from "./components/MapComponent";
 import SettingsPage from "./components/SettingsPage";
-import CardPage from "./components/CardPage";
 import { VaccineCardpage } from "./components/VaccineCardPage";
 import { IDCardPage } from "./components/IDCardPage";
-import { CALLBACK_MGR } from "./components/utils/CallbackMgr";
 
 const Stack = createNativeStackNavigator();
 
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <HomePage callbackMgr={CALLBACK_MGR} />
-      <SwipeUpMenu callbackMgr={CALLBACK_MGR} navigation={navigation} />
+      <HomePage />
+      <SwipeUpMenu navigation={navigation} />
       <StatusBar style="auto" />
     </View>
   );
-};
-
-const SettingsScreen = ({ navigation }) => {
-  return <SettingsPage callbackMgr={CALLBACK_MGR} />;
 };
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home"
+        <Stack.Screen
+          name="Home"
           component={HomeScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Camera"
+        <Stack.Screen
+          name="Camera"
           component={LocationCheckQRCode}
           options={{ headerShown: true }}
         />
-        <Stack.Screen name="Map"
+        <Stack.Screen
+          name="Map"
           component={MapComponent}
           options={{ headerShown: true }}
         />
-        <Stack.Screen name="VaccineCard"
+        <Stack.Screen
+          name="Vaccine Card"
           component={VaccineCardpage}
           options={{ headerShown: true }}
         />
-        <Stack.Screen name="IdCard"
+        <Stack.Screen
+          name="ID Card"
           component={IDCardPage}
           options={{ headerShown: true }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Settings"
-          component={SettingsScreen}
+          component={SettingsPage}
           options={{
             headerShown: true,
           }}
@@ -71,8 +68,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

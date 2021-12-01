@@ -25,20 +25,46 @@ export const onSubmit = (sec, zip) => {
 };
 
 const notify = (sec, zip) => {
+  if (!CALLBACK_MGR.alertStatus()) {
+    return;
+  }
+
   if (!sec) {
     sec = 0;
   }
-  if (sec <= 0) {
-    Notifications.setNotificationHandler({
-      handleNotification: async () => {
-        return {
-          shouldShowAlert: true,
-          shouldPlaySound: true,
-          shouldSetBadge: true,
-        };
-      },
-    });
+
+  const updateEpiCenter = async (arr) => {
+    let val = await getEpiCenter();
+    if (!isObject(val)) {
+      val = {};
+    }
+    appendPlaceToDate(val, currDate(), arr);
+    storeEpiCenter(val).then((_val) => CALLBACK_MGR.reloadCallback());
+    console.log("notification callback");
+  };
+
+  Notifications.setNotificationHandler({
+    handleNotification: async (n) => {
+      let {
+        request: {
+          content: {
+            data: { data: arr },
+          },
+        },
+      } = n;
+      await updateEpiCenter(arr);
+      return {
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      };
+    },
+  });
+
+  if (sec > 0) {
+    updateEpiCenter([zip]);
   }
+
   const schedulingOptions = {
     content: {
       title: "Possible Exposure Detected",
@@ -56,24 +82,6 @@ const notify = (sec, zip) => {
   };
 
   Notifications.scheduleNotificationAsync(schedulingOptions);
-
-  Notifications.addNotificationReceivedListener((n) => {
-    // console.log("This is run")
-    getEpiCenter().then((val) => {
-      let {
-        request: {
-          content: {
-            data: { data: arr },
-          },
-        },
-      } = n;
-      if (!isObject(val)) {
-        val = {};
-      }
-      appendPlaceToDate(val, currDate(), arr);
-      storeEpiCenter(val).then((_val) => CALLBACK_MGR.reloadCallback());
-    });
-  });
 };
 
 const isObject = (obj) =>

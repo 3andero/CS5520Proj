@@ -19,7 +19,7 @@ import {
 import * as VaccineCard from "./VaccineCardPage";
 import * as IDCard from "./IDCardPage";
 import { onSubmit } from "./NotificationMgr";
-import { removeValue, storeData } from "./utils/Storage";
+import { removeValue } from "./utils/Storage";
 import {
   currDate,
   getEpiCenter,
@@ -28,6 +28,7 @@ import {
   storeVisited,
 } from "./utils/PlacesStorage";
 import { CALLBACK_MGR } from "./utils/CallbackMgr";
+import { Linking } from "react-native";
 
 const ORANGE = "#FF9500";
 const BLUE = "#007AFF";
@@ -46,6 +47,9 @@ const COVID_ALERT_BOX = 0;
 const DEBUG_MODE_BOX = 1;
 const EXPOSE_STATUS_BOX = 2;
 const NOTIFICATION_BUTTON = 3;
+
+const PRIVACY_URL =
+  "https://www.canada.ca/en/public-health/services/diseases/coronavirus-disease-covid-19/covid-alert/privacy-policy.html";
 
 const resetCards = (msg) => {
   Alert.alert("Warning", msg, [
@@ -98,7 +102,15 @@ const sections = [
         icon: "lock-closed",
         backgroundColor: RED,
         type: "ionicon",
-        onPress: () => {},
+        onPress: () => {
+          Linking.canOpenURL(PRIVACY_URL).then((supported) => {
+            if (supported) {
+              Linking.openURL(PRIVACY_URL);
+            } else {
+              console.log("Don't know how to open URI: " + this.props.url);
+            }
+          });
+        },
       },
     ],
   },
@@ -206,32 +218,32 @@ const sections = [
 
 const CheckBoxes = {
   [COVID_ALERT_BOX]: {
-    onPress: (props0, val) => {
-      props0.callbackMgr.alertStatusCallback(val);
+    onPress: (val) => {
+      CALLBACK_MGR.alertStatusCallback(val);
     },
-    defaultVal: (props0) => props0.callbackMgr.alertStatus(),
+    defaultVal: () => CALLBACK_MGR.alertStatus(),
   },
   [DEBUG_MODE_BOX]: {
-    onPress: (props0, val) => {},
-    defaultVal: (props0) => false,
+    onPress: (val) => {},
+    defaultVal: () => false,
   },
   [EXPOSE_STATUS_BOX]: {
-    onPress: (props0, val) => {
-      props0.callbackMgr.isExposedCallback(val);
+    onPress: (val) => {
+      CALLBACK_MGR.isExposedCallback(val);
     },
-    defaultVal: (props0) => props0.callbackMgr.isExposed(),
+    defaultVal: () => CALLBACK_MGR.isExposed(),
   },
   [NOTIFICATION_BUTTON]: {
-    onPress: (props0, val) => {},
-    defaultVal: (props0) => false,
+    onPress: (val) => {},
+    defaultVal: () => false,
   },
 };
 
-const SettingsPage = (props0) => {
+const SettingsPage = () => {
   const switched = [];
   const setSwitched = [];
   for (let index = 0; index < Object.keys(CheckBoxes).length; index++) {
-    let [v, s] = useState(CheckBoxes[index].defaultVal(props0));
+    let [v, s] = useState(CheckBoxes[index].defaultVal());
     switched.push(v);
     setSwitched.push(s);
   }
@@ -267,8 +279,7 @@ const SettingsPage = (props0) => {
         style={{ ...style, marginHorizontal: ITEM_MARGIN }}
         onPress={() => {
           stateIndex && setSwitched[stateIndex](!switched[stateIndex]);
-          props.onPress &&
-            props.onPress(props0, stateIndex && switched[stateIndex]);
+          props.onPress && props.onPress(stateIndex && switched[stateIndex]);
         }}
         disabled={checkBox}
       >
@@ -316,7 +327,7 @@ const SettingsPage = (props0) => {
             value={switched[stateIndex]}
             onValueChange={(val) => {
               setSwitched[stateIndex](val);
-              CheckBoxes[stateIndex].onPress(props0, val);
+              CheckBoxes[stateIndex].onPress(val);
             }}
           />
         )}
@@ -452,14 +463,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
-  // button: {
-  //   borderRadius: 20,
-  //   padding: 10,
-  //   elevation: 2,
-  // },
-  // buttonClose: {
-  //   backgroundColor: "#2196F3",
-  // },
   inputContainerStyle: {
     marginTop: 16,
     width: "90%",
@@ -468,7 +471,6 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
-    // padding: 10,
     width: 60,
   },
 });

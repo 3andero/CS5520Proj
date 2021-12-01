@@ -3,8 +3,8 @@ import { View, Text, Dimensions, StyleSheet } from "react-native";
 import BottomDrawer from "./utils/BottomDrawer";
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements/dist/icons/Icon";
-import PropTypes from "prop-types";
 import { fontWeight } from "./utils/FontWeightRender";
+import { CALLBACK_MGR } from "./utils/CallbackMgr";
 
 const SCREEN_HEIGHT = Dimensions.get("screen").height;
 const SCREEN_WIDTH = Dimensions.get("screen").width;
@@ -13,10 +13,6 @@ const ACTUAL_DOWN_HEIGHT = 80;
 const DOWN_HEIGHT = UP_HEIGHT - ACTUAL_DOWN_HEIGHT;
 
 class SwipeUpMenu extends Component {
-  static propTypes = {
-    callbackMgr: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -24,8 +20,8 @@ class SwipeUpMenu extends Component {
       alertStatus: true,
     };
 
-    props.callbackMgr.alertStatus = () => this.state.alertStatus;
-    props.callbackMgr.alertStatusCallback = (alertStatus) => {
+    CALLBACK_MGR.alertStatus = () => this.state.alertStatus;
+    CALLBACK_MGR.alertStatusCallback = (alertStatus) => {
       this.setState({ alertStatus });
     };
   }
@@ -212,7 +208,7 @@ class SwipeUpMenu extends Component {
             titleStyle={{
               fontWeight: "bold",
             }}
-            onPress={() => this.props.navigation.navigate("VaccineCard")}
+            onPress={() => this.props.navigation.navigate("Vaccine Card")}
           />
         </View>
         <View
@@ -241,7 +237,7 @@ class SwipeUpMenu extends Component {
             titleStyle={{
               fontWeight: "bold",
             }}
-            onPress={() => this.props.navigation.navigate("IdCard")}
+            onPress={() => this.props.navigation.navigate("ID Card")}
           />
         </View>
         <View
@@ -285,7 +281,7 @@ class SwipeUpMenu extends Component {
         startUp={false}
         onSwiping={(perc, dy) => {
           perc = 1 - perc;
-          this.props.callbackMgr.swipeUpCallback(perc, dy);
+          CALLBACK_MGR.swipeUpCallback(perc, dy);
           perc = Math.max(Math.round(perc * 400) / 400, 0);
           this.setState({
             swipePercentage: perc,
