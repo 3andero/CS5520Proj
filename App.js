@@ -49,11 +49,11 @@ export default function App() {
         />
         <Stack.Screen name="VaccineCard"
           component={VaccineCardpage}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
         <Stack.Screen name="IdCard"
           component={IDCardPage}
-          options={{ headerShown: false }}
+          options={{ headerShown: true }}
         />
          <Stack.Screen
           name="Settings"

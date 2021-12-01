@@ -90,7 +90,7 @@ class CardPage extends Component {
   render() {
     return (
       <View style={{ flex: 1, flexDirection: "column-reverse" }}>
-        {/* <Button
+        <Button
           buttonStyle={{
             backgroundColor: GREY,
             height: 65,
@@ -101,8 +101,8 @@ class CardPage extends Component {
             fontWeight: "bold",
           }}
           onPress={this.pickImage}
-        /> */}
-        <TouchableOpacity onPress={this.pickImage} 
+        />
+        {/* <TouchableOpacity onPress={this.pickImage} 
           style={{
                   width: screenWidth,
                   height: screenHeight/8,
@@ -116,7 +116,7 @@ class CardPage extends Component {
                       }}>
             Select Image
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View
           style={{
             flex: 10,
