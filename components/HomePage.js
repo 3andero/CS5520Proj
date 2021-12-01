@@ -296,10 +296,6 @@ class HomePage extends Component {
     getCurrentLocationAndStore().then(([ok, location]) => {
       if (ok) {
         this.cachedLocation = location;
-        console.log("set");
-        console.log(location);
-      } else {
-        console.log("4");
       }
     });
   }
