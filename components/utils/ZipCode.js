@@ -7,8 +7,6 @@ import {
   storeVisited,
 } from "./PlacesStorage";
 
-let apiKey = "AIzaSyA937CZdWjwqTPx91Zw2hD3Ik8VnWAQ9gc";
-
 /**
  * usage:
  * `getZipCode(-122.9725459, 49.2433804).then(val => console.log(val));`
@@ -28,7 +26,6 @@ export async function getZipCode(longitude, latitude) {
     return;
   }
 
-  Location.setGoogleApiKey(apiKey);
   let regions = await Location.reverseGeocodeAsync({
     longitude,
     latitude,
@@ -58,7 +55,6 @@ export async function getLocation(postalCode) {
     Alert.alert("Error", "Permission to access location was denied");
     return;
   }
-  Location.setGoogleApiKey(apiKey);
   let regions = await Location.geocodeAsync(postalCode);
   return regions.pop();
 }
